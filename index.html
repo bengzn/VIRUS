@@ -76,7 +76,7 @@ button {
   z-index: 1000;
 }
 
-/* Progress Bar */
+/* Progress bar */
 .progress-container {
   width: 80%;
   background: rgba(255,255,255,0.3);
@@ -90,7 +90,7 @@ button {
   width: 0%;
   background: white;
   border-radius: 20px;
-  transition: width 0.5s ease;
+  transition: width 0.5s;
 }
 
 /* Loading animation */
@@ -106,25 +106,41 @@ button {
   margin-top: 20px;
 }
 
-input {
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  font-size: 16px;
-  margin-top: 10px;
+/* Media */
+video {
+  max-width: 90%;
+  border-radius: 15px;
+  margin: 20px 0;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+.photo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
+.photo-grid img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.4);
 }
 </style>
 </head>
 
 <body>
 
+<!-- Audio (will NOT autoplay) -->
 <audio id="loveSong" loop>
   <source src="Billie_Eilish_-_Birds_of_feather_(mp3.pm).mp3" type="audio/mpeg">
 </audio>
 
 <div class="container">
   <h1>Ruhiii ❤️</h1>
-  <p>I'm soo lucky I get to call you my girlfriend :)</p>
+  <p>I'm sooo lucky I get to call you my girlfriend :)</p>
   <p>But now I have one important question...</p>
   <h2>Will you be my Valentine? 💘</h2>
   <button id="yesBtn">YES 💖</button>
@@ -153,104 +169,98 @@ window.onload = function() {
   const container = document.querySelector(".container");
   const song = document.getElementById("loveSong");
 
-  noBtn.addEventListener("mouseover", function() {
-    const containerRect = container.getBoundingClientRect();
-    const maxX = containerRect.width - noBtn.offsetWidth;
-    const maxY = containerRect.height - noBtn.offsetHeight;
-    noBtn.style.left = Math.random() * maxX + "px";
-    noBtn.style.top = Math.random() * maxY + "px";
+  noBtn.addEventListener("mouseover", () => {
+    const r = container.getBoundingClientRect();
+    noBtn.style.left = Math.random() * (r.width - noBtn.offsetWidth) + "px";
+    noBtn.style.top = Math.random() * (r.height - noBtn.offsetHeight) + "px";
   });
 
-  yesBtn.addEventListener("click", function() {
-
-    song.play();
+  yesBtn.addEventListener("click", () => {
 
     const overlay = document.createElement("div");
-    overlay.classList.add("overlay");
+    overlay.className = "overlay";
 
     overlay.innerHTML = `
       <h1>🔐 3-Step Verification Required</h1>
-      <p>Security scanning in progress...</p>
+      <p>Verifying that you are the real Ruhi...</p>
 
       <div class="progress-container">
         <div class="progress-bar" id="progressBar"></div>
       </div>
 
-      <div id="quizContainer"></div>
-      <div id="statusMessage"></div>
+      <div id="quiz"></div>
+      <div id="status"></div>
     `;
 
     document.body.appendChild(overlay);
 
     const progressBar = document.getElementById("progressBar");
-    const quizContainer = document.getElementById("quizContainer");
-    const statusMessage = document.getElementById("statusMessage");
+    const quiz = document.getElementById("quiz");
+    const status = document.getElementById("status");
 
     const questions = [
-      { question: "How many cats do I have?", answer: "4" },
-      { question: "Who's better at Clash Royale?", answer: "ben" },
-      { question: "Who sleeps more?", answer: "ben" }
+      { q: "How many cats do I have?", a: "4" },
+      { q: "Who's better at Clash Royale?", a: "ben" },
+      { q: "Who sleeps more?", a: "ben" }
     ];
 
-    let currentQuestion = 0;
-
-    function updateProgress() {
-      progressBar.style.width = ((currentQuestion) / questions.length) * 100 + "%";
-    }
+    let step = 0;
 
     function showQuestion() {
-      updateProgress();
-      const q = questions[currentQuestion];
-
-      quizContainer.innerHTML = `
-        <h2>Step ${currentQuestion + 1} of 3</h2>
-        <p>${q.question}</p>
-        <input type="text" id="userAnswer">
+      progressBar.style.width = (step / questions.length) * 100 + "%";
+      quiz.innerHTML = `
+        <h2>Step ${step + 1} of 3</h2>
+        <p>${questions[step].q}</p>
+        <input id="answer" style="padding:10px;border-radius:10px;border:none;">
         <br>
-        <button id="submitAnswer">Submit</button>
+        <button id="submit">Submit</button>
       `;
-
-      document.getElementById("submitAnswer")
-        .addEventListener("click", checkAnswer);
+      document.getElementById("submit").onclick = checkAnswer;
     }
 
     function checkAnswer() {
-      const input = document.getElementById("userAnswer").value.trim().toLowerCase();
-      const correct = questions[currentQuestion].answer;
-
-      if (input === correct) {
-        statusMessage.innerHTML = `<div class="loading">🔍 Verifying identity...</div>`;
-        quizContainer.innerHTML = "";
-
+      const input = document.getElementById("answer").value.trim().toLowerCase();
+      if (input === questions[step].a) {
+        status.innerHTML = `<div class="loading">🔍 Verifying...</div>`;
+        quiz.innerHTML = "";
         setTimeout(() => {
-          currentQuestion++;
-          statusMessage.innerHTML = "";
-
-          if (currentQuestion < questions.length) {
-            showQuestion();
-          } else {
-            showSuccess();
-          }
+          status.innerHTML = "";
+          step++;
+          step < questions.length ? showQuestion() : success();
         }, 1500);
-
       } else {
-        statusMessage.innerHTML = "❌ Verification failed. Suspicious activity detected 🤨";
-        setTimeout(() => {
-          statusMessage.innerHTML = "";
-        }, 2000);
+        status.innerHTML = "❌ Verification failed. Suspicious activity 🤨";
+        setTimeout(() => status.innerHTML = "", 2000);
       }
     }
 
-    function showSuccess() {
+    function success() {
       progressBar.style.width = "100%";
+      song.play(); // 🎵 MUSIC STARTS HERE
 
       overlay.innerHTML = `
         <h1>✅ ACCESS GRANTED 💖</h1>
         <h2>Identity Confirmed: The Real Ruhi 🥹</h2>
-        <p>You are officially my Valentine.</p>
-        <p style="margin-top:20px; font-size:1.2em;">
+        <p>You are officially my Valentine 💍</p>
+
+        <video controls autoplay>
+          <source src="IMG_2032.mov" type="video/quicktime">
+        </video>
+
+        <div class="photo-grid">
+          <img src="1.jpg">
+          <img src="2.jpeg">
+          <img src="3.jpg">
+          <img src="5.PNG">
+          <img src="6.JPG">
+          <img src="7.PNG">
+          <img src="8.jpeg">
+          <img src="9.PNG">
+        </div>
+
+        <p style="margin-top:20px;font-size:1.2em;">
           I love you more than words can explain.  
-          Forever starts now 💍💕
+          Forever starts now 💞
         </p>
       `;
     }
