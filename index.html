@@ -101,12 +101,52 @@ button {
   object-fit: cover;
   border-radius: 15px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .photo-grid img:hover {
   transform: scale(1.05);
   box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+/* Lightbox */
+.lightbox {
+  position: fixed;
+  top:0;
+  left:0;
+  width: 100%;
+  height:100%;
+  background: rgba(0,0,0,0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s;
+  flex-direction: column;
+}
+
+.lightbox img {
+  max-width: 90%;
+  max-height: 80%;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+}
+
+.lightbox.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -163,10 +203,8 @@ window.onload = function() {
 
   // YES button click
   yesBtn.addEventListener("click", function() {
-    // Play the MP3 audio
     song.play();
 
-    // Show overlay with video and photo grid
     const overlay = document.createElement("div");
     overlay.classList.add("overlay");
 
@@ -181,18 +219,45 @@ window.onload = function() {
         <img src="1.jpg" alt="Us">
         <img src="2.jpeg" alt="Us">
         <img src="3.jpg" alt="Us">
+        <img src="4.jpg" alt="Us">
+        <img src="5.jpg" alt="Us">
+        <img src="6.jpg" alt="Us">
+        <img src="7.jpg" alt="Us">
+        <img src="8.jpg" alt="Us">
         <img src="9.PNG" alt="Us">
-        <img src="5.PNG" alt="Us">
-        <img src="6.JPG" alt="Us">
-        <img src="7.PNG" alt="Us">
-        <img src="8.jpeg" alt="Us">
-        <img src="shirt.jpeg" alt="Us">
-       
+        <!-- Add more images here -->
       </div>
       <p style="margin-top:15px;">Forever starts now 💞</p>
     `;
 
     document.body.appendChild(overlay);
+
+    // Lightbox
+    const lightbox = document.createElement("div");
+    lightbox.classList.add("lightbox");
+    lightbox.innerHTML = `<img src=""><button id="closeLightbox">Close</button>`;
+    document.body.appendChild(lightbox);
+
+    const lightboxImg = lightbox.querySelector("img");
+    const closeBtn = lightbox.querySelector("#closeLightbox");
+
+    // Open lightbox on image click
+    overlay.querySelectorAll(".photo-grid img").forEach(img => {
+      img.addEventListener("click", () => {
+        lightboxImg.src = img.src;
+        lightbox.classList.add("show");
+      });
+    });
+
+    // Close lightbox
+    closeBtn.addEventListener("click", () => {
+      lightbox.classList.remove("show");
+    });
+
+    // Click outside image to close
+    lightbox.addEventListener("click", e => {
+      if (e.target === lightbox) lightbox.classList.remove("show");
+    });
   });
 };
 </script>
