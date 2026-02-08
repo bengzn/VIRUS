@@ -170,7 +170,7 @@ button {
 </div>
 
 <script>
-// Floating hearts
+// Floating hearts continuously
 function createHeart() {
   const heart = document.createElement("div");
   heart.innerHTML = "❤️";
@@ -183,6 +183,24 @@ function createHeart() {
   setTimeout(() => heart.remove(), 5000);
 }
 setInterval(createHeart, 500);
+
+// Floating hearts on click (interactive)
+function createClickHeart(x, y) {
+  const heart = document.createElement("div");
+  heart.innerHTML = "💖";
+  heart.style.position = "fixed";
+  heart.style.left = x + "px";
+  heart.style.top = y + "px";
+  heart.style.fontSize = Math.random() * 25 + 20 + "px";
+  heart.style.pointerEvents = "none";
+  heart.style.transition = "all 1s ease-out";
+  document.body.appendChild(heart);
+  setTimeout(() => {
+    heart.style.top = (y - 150) + "px";
+    heart.style.opacity = "0";
+  }, 50);
+  setTimeout(() => heart.remove(), 1000);
+}
 
 window.onload = function() {
   const yesBtn = document.getElementById("yesBtn");
@@ -208,9 +226,10 @@ window.onload = function() {
     const overlay = document.createElement("div");
     overlay.classList.add("overlay");
 
+    // Add placeholder for typed text
     overlay.innerHTML = `
       <h1 style="font-size: 2.5em;">YAYYYY She said YES!!! 💍💖</h1>
-      <p style="font-size:1.2em;">Ruhi, I love you more than words can explain. You just made me the happiest valentine ever 😁❤️ I can't wait to see you next month 😘.</p>
+      <p id="loveMessage" style="font-size:1.2em;"></p>
       <video controls autoplay>
         <source src="IMG_2032.mov" type="video/quicktime">
         Your browser does not support the video tag.
@@ -228,8 +247,20 @@ window.onload = function() {
       </div>
       <p style="margin-top:15px;">Forever starts now 💞</p>
     `;
-
     document.body.appendChild(overlay);
+
+    // Typing effect for love message
+    const message = "Ruhi, I love you more than words can explain. You just made me the happiest Valentine ever 😁❤️ I can't wait to see you next month 😘.";
+    const loveMessage = document.getElementById("loveMessage");
+    let i = 0;
+    function typeText() {
+      if(i < message.length) {
+        loveMessage.innerHTML += message.charAt(i);
+        i++;
+        setTimeout(typeText, 40);
+      }
+    }
+    typeText();
 
     // Lightbox
     const lightbox = document.createElement("div");
@@ -252,10 +283,13 @@ window.onload = function() {
     closeBtn.addEventListener("click", () => {
       lightbox.classList.remove("show");
     });
-
-    // Click outside image to close
     lightbox.addEventListener("click", e => {
-      if (e.target === lightbox) lightbox.classList.remove("show");
+      if(e.target === lightbox) lightbox.classList.remove("show");
+    });
+
+    // Click anywhere on overlay to spawn floating hearts
+    overlay.addEventListener("click", (e) => {
+      createClickHeart(e.clientX, e.clientY);
     });
   });
 };
