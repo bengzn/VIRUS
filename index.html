@@ -58,7 +58,7 @@ button {
   100% { transform: translateY(110vh); opacity: 0; }
 }
 
-/* YES Overlay */
+/* Overlay */
 .overlay {
   position: fixed;
   top:0;
@@ -70,90 +70,54 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  text-align: center;
   flex-direction: column;
   padding: 20px;
   overflow-y: auto;
   z-index: 1000;
 }
 
-/* Video styling */
-.overlay video {
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-  margin-bottom: 20px;
-  max-width: 90%;
-  height: auto;
+/* Progress Bar */
+.progress-container {
+  width: 80%;
+  background: rgba(255,255,255,0.3);
+  border-radius: 20px;
+  margin: 20px 0;
+  height: 20px;
 }
 
-/* Photo grid */
-.photo-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 15px;
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: white;
+  border-radius: 20px;
+  transition: width 0.5s ease;
 }
 
-.photo-grid img {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+/* Loading animation */
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
 }
 
-.photo-grid img:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-}
-
-/* Lightbox */
-.lightbox {
-  position: fixed;
-  top:0;
-  left:0;
-  width: 100%;
-  height:100%;
-  background: rgba(0,0,0,0.9);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s;
-  flex-direction: column;
-}
-
-.lightbox img {
-  max-width: 90%;
-  max-height: 80%;
-  border-radius: 15px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-}
-
-.lightbox.show {
-  opacity: 1;
-  visibility: visible;
-}
-
-.lightbox button {
+.loading {
+  animation: pulse 1s infinite;
+  font-size: 1.2em;
   margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 18px;
+}
+
+input {
+  padding: 10px;
   border-radius: 10px;
   border: none;
-  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- Audio -->
 <audio id="loveSong" loop>
   <source src="Billie_Eilish_-_Birds_of_feather_(mp3.pm).mp3" type="audio/mpeg">
 </audio>
@@ -162,15 +126,13 @@ button {
   <h1>Ruhiii ❤️</h1>
   <p>I'm soo lucky I get to call you my girlfriend :)</p>
   <p>But now I have one important question...</p>
-
   <h2>Will you be my Valentine? 💘</h2>
-
   <button id="yesBtn">YES 💖</button>
   <button id="noBtn">No 🙄</button>
 </div>
 
 <script>
-// Floating hearts continuously
+// Floating hearts
 function createHeart() {
   const heart = document.createElement("div");
   heart.innerHTML = "❤️";
@@ -184,113 +146,116 @@ function createHeart() {
 }
 setInterval(createHeart, 500);
 
-// Floating hearts on click (interactive)
-function createClickHeart(x, y) {
-  const heart = document.createElement("div");
-  heart.innerHTML = "💖";
-  heart.style.position = "fixed";
-  heart.style.left = x + "px";
-  heart.style.top = y + "px";
-  heart.style.fontSize = Math.random() * 25 + 20 + "px";
-  heart.style.pointerEvents = "none";
-  heart.style.transition = "all 1s ease-out";
-  document.body.appendChild(heart);
-  setTimeout(() => {
-    heart.style.top = (y - 150) + "px";
-    heart.style.opacity = "0";
-  }, 50);
-  setTimeout(() => heart.remove(), 1000);
-}
-
 window.onload = function() {
+
   const yesBtn = document.getElementById("yesBtn");
   const noBtn = document.getElementById("noBtn");
   const container = document.querySelector(".container");
   const song = document.getElementById("loveSong");
 
-  // Moving NO button
   noBtn.addEventListener("mouseover", function() {
     const containerRect = container.getBoundingClientRect();
     const maxX = containerRect.width - noBtn.offsetWidth;
     const maxY = containerRect.height - noBtn.offsetHeight;
-    const randomX = Math.floor(Math.random() * maxX);
-    const randomY = Math.floor(Math.random() * maxY);
-    noBtn.style.left = randomX + "px";
-    noBtn.style.top = randomY + "px";
+    noBtn.style.left = Math.random() * maxX + "px";
+    noBtn.style.top = Math.random() * maxY + "px";
   });
 
-  // YES button click
   yesBtn.addEventListener("click", function() {
+
     song.play();
 
     const overlay = document.createElement("div");
     overlay.classList.add("overlay");
 
-    // Add placeholder for typed text
     overlay.innerHTML = `
-      <h1 style="font-size: 2.5em;">YAYYYY She said YES!!! 💍💖</h1>
-      <p id="loveMessage" style="font-size:1.2em;"></p>
-      <video controls autoplay>
-        <source src="IMG_2032.mov" type="video/quicktime">
-        Your browser does not support the video tag.
-      </video>
-      <div class="photo-grid">
-       <img src="1.jpg" alt="Us">
-        <img src="2.jpeg" alt="Us">
-        <img src="3.jpg" alt="Us">
-        <img src="9.PNG" alt="Us">
-        <img src="5.PNG" alt="Us">
-        <img src="6.JPG" alt="Us">
-        <img src="7.PNG" alt="Us">
-        <img src="8.jpeg" alt="Us">
-        <img src="shirt.jpeg" alt="Us">
+      <h1>🔐 3-Step Verification Required</h1>
+      <p>Security scanning in progress...</p>
+
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
       </div>
-      <p style="margin-top:15px;">Forever starts now 💞</p>
+
+      <div id="quizContainer"></div>
+      <div id="statusMessage"></div>
     `;
+
     document.body.appendChild(overlay);
 
-    // Typing effect for love message
-    const message = "Ruhi, I love you more than words can explain. You just made me the happiest Valentine ever 😁❤️ I can't wait to see you next month 😘.";
-    const loveMessage = document.getElementById("loveMessage");
-    let i = 0;
-    function typeText() {
-      if(i < message.length) {
-        loveMessage.innerHTML += message.charAt(i);
-        i++;
-        setTimeout(typeText, 40);
+    const progressBar = document.getElementById("progressBar");
+    const quizContainer = document.getElementById("quizContainer");
+    const statusMessage = document.getElementById("statusMessage");
+
+    const questions = [
+      { question: "How many cats do I have?", answer: "4" },
+      { question: "Who's better at Clash Royale?", answer: "ben" },
+      { question: "Who sleeps more?", answer: "ben" }
+    ];
+
+    let currentQuestion = 0;
+
+    function updateProgress() {
+      progressBar.style.width = ((currentQuestion) / questions.length) * 100 + "%";
+    }
+
+    function showQuestion() {
+      updateProgress();
+      const q = questions[currentQuestion];
+
+      quizContainer.innerHTML = `
+        <h2>Step ${currentQuestion + 1} of 3</h2>
+        <p>${q.question}</p>
+        <input type="text" id="userAnswer">
+        <br>
+        <button id="submitAnswer">Submit</button>
+      `;
+
+      document.getElementById("submitAnswer")
+        .addEventListener("click", checkAnswer);
+    }
+
+    function checkAnswer() {
+      const input = document.getElementById("userAnswer").value.trim().toLowerCase();
+      const correct = questions[currentQuestion].answer;
+
+      if (input === correct) {
+        statusMessage.innerHTML = `<div class="loading">🔍 Verifying identity...</div>`;
+        quizContainer.innerHTML = "";
+
+        setTimeout(() => {
+          currentQuestion++;
+          statusMessage.innerHTML = "";
+
+          if (currentQuestion < questions.length) {
+            showQuestion();
+          } else {
+            showSuccess();
+          }
+        }, 1500);
+
+      } else {
+        statusMessage.innerHTML = "❌ Verification failed. Suspicious activity detected 🤨";
+        setTimeout(() => {
+          statusMessage.innerHTML = "";
+        }, 2000);
       }
     }
-    typeText();
 
-    // Lightbox
-    const lightbox = document.createElement("div");
-    lightbox.classList.add("lightbox");
-    lightbox.innerHTML = `<img src=""><button id="closeLightbox">Close</button>`;
-    document.body.appendChild(lightbox);
+    function showSuccess() {
+      progressBar.style.width = "100%";
 
-    const lightboxImg = lightbox.querySelector("img");
-    const closeBtn = lightbox.querySelector("#closeLightbox");
+      overlay.innerHTML = `
+        <h1>✅ ACCESS GRANTED 💖</h1>
+        <h2>Identity Confirmed: The Real Ruhi 🥹</h2>
+        <p>You are officially my Valentine.</p>
+        <p style="margin-top:20px; font-size:1.2em;">
+          I love you more than words can explain.  
+          Forever starts now 💍💕
+        </p>
+      `;
+    }
 
-    // Open lightbox on image click
-    overlay.querySelectorAll(".photo-grid img").forEach(img => {
-      img.addEventListener("click", () => {
-        lightboxImg.src = img.src;
-        lightbox.classList.add("show");
-      });
-    });
-
-    // Close lightbox
-    closeBtn.addEventListener("click", () => {
-      lightbox.classList.remove("show");
-    });
-    lightbox.addEventListener("click", e => {
-      if(e.target === lightbox) lightbox.classList.remove("show");
-    });
-
-    // Click anywhere on overlay to spawn floating hearts
-    overlay.addEventListener("click", (e) => {
-      createClickHeart(e.clientX, e.clientY);
-    });
+    showQuestion();
   });
 };
 </script>
