@@ -77,9 +77,9 @@ button {
 }
 
 .overlay img {
-  width: 150px;
+  width: 100px;
   border-radius: 15px;
-  margin: 10px;
+  margin: 5px;
 }
 </style>
 </head>
@@ -103,7 +103,6 @@ button {
 </div>
 
 <script>
-
 // Floating hearts
 function createHeart() {
   const heart = document.createElement("div");
@@ -119,7 +118,6 @@ function createHeart() {
 setInterval(createHeart, 500);
 
 window.onload = function() {
-
   const yesBtn = document.getElementById("yesBtn");
   const noBtn = document.getElementById("noBtn");
   const container = document.querySelector(".container");
@@ -138,7 +136,6 @@ window.onload = function() {
 
   // YES button click
   yesBtn.addEventListener("click", function() {
-
     song.play(); // start music
 
     const overlay = document.createElement("div");
@@ -148,12 +145,16 @@ window.onload = function() {
       <h1 style="font-size: 2.5em;">She said YES!!! 💍💖</h1>
       <p style="font-size:1.2em;">Ruhiii, I love you more than words can explain ❤️</p>
       <div>
-      <video controls width="600" height="400">
-    <source src="IMG_2032.mov" type="video/mov">
-        <img src="1.jpg">
-        <img src="3.jpg">
-        <img src="9.PNG">
-        <img src="2.jpeg">
+        <video controls width="600" height="400" autoplay>
+          <source src="IMG_2032.mov" type="video/quicktime">
+          Your browser does not support the video tag.
+        </video>
+        <div style="margin-top:10px;">
+          <img src="1.jpg">
+          <img src="3.jpg">
+          <img src="9.PNG">
+          <img src="2.jpeg">
+        </div>
       </div>
       <p style="margin-top:15px;">Forever starts now 💞</p>
     `;
