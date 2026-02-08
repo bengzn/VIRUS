@@ -71,7 +71,7 @@ button {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  padding: 20px;
+  padding: 30px;
   overflow-y: auto;
   z-index: 1000;
 }
@@ -114,26 +114,71 @@ video {
   box-shadow: 0 8px 20px rgba(0,0,0,0.4);
 }
 
+/* Photo grid */
 .photo-grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 15px;
+  gap: 20px;
+  margin-top: 20px;
 }
 
 .photo-grid img {
-  width: 150px;
-  height: 150px;
+  width: 160px;
+  height: 160px;
   object-fit: cover;
   border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.photo-grid img:hover {
+  transform: scale(1.08);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+}
+
+/* Lightbox */
+.lightbox {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.9);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  visibility:hidden;
+  transition:0.3s;
+  z-index:2000;
+}
+
+.lightbox img {
+  max-width:90%;
+  max-height:85%;
+  border-radius:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.7);
+}
+
+.lightbox.show {
+  opacity:1;
+  visibility:visible;
+}
+
+.final-text {
+  margin-top: 25px;
+  font-size: 1.3em;
+  background: rgba(255,255,255,0.2);
+  padding: 15px;
+  border-radius: 15px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- Audio (will NOT autoplay) -->
 <audio id="loveSong" loop>
   <source src="Billie_Eilish_-_Birds_of_feather_(mp3.pm).mp3" type="audio/mpeg">
 </audio>
@@ -182,12 +227,9 @@ window.onload = function() {
 
     overlay.innerHTML = `
       <h1>🔐 3-Step Verification Required</h1>
-      <p>Verifying that you are the real Ruhi...</p>
-
       <div class="progress-container">
         <div class="progress-bar" id="progressBar"></div>
       </div>
-
       <div id="quiz"></div>
       <div id="status"></div>
     `;
@@ -236,12 +278,11 @@ window.onload = function() {
 
     function success() {
       progressBar.style.width = "100%";
-      song.play(); // 🎵 MUSIC STARTS HERE
+      song.play();
 
       overlay.innerHTML = `
         <h1>✅ ACCESS GRANTED 💖</h1>
-        <h2>Identity Confirmed: The Real Ruhi 🥹</h2>
-        <p>You are officially my Valentine 💍</p>
+        <h2>The Real Ruhi Has Entered 🥹</h2>
 
         <video controls autoplay>
           <source src="IMG_2032.mov" type="video/quicktime">
@@ -258,11 +299,31 @@ window.onload = function() {
           <img src="9.PNG">
         </div>
 
-        <p style="margin-top:20px;font-size:1.2em;">
+        <div class="final-text">
           I love you more than words can explain.  
+          You make my life better every single day.  
           Forever starts now 💞
-        </p>
+        </div>
       `;
+
+      // Lightbox functionality
+      const lightbox = document.createElement("div");
+      lightbox.className = "lightbox";
+      lightbox.innerHTML = `<img src="">`;
+      document.body.appendChild(lightbox);
+
+      const lightboxImg = lightbox.querySelector("img");
+
+      document.querySelectorAll(".photo-grid img").forEach(img => {
+        img.addEventListener("click", () => {
+          lightboxImg.src = img.src;
+          lightbox.classList.add("show");
+        });
+      });
+
+      lightbox.addEventListener("click", () => {
+        lightbox.classList.remove("show");
+      });
     }
 
     showQuestion();
