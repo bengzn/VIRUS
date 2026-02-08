@@ -86,6 +86,11 @@ button {
 
 <body>
 
+<!-- Music (will play after YES click) -->
+<audio id="loveSong" loop>
+  <source src="song.mp3" type="audio/mpeg">
+</audio>
+
 <div class="container">
   <h1>Ruhiii ❤️</h1>
   <p>You’ve made my life brighter every single day.</p>
@@ -96,9 +101,6 @@ button {
   <button id="yesBtn">YES 💖</button>
   <button id="noBtn">No 🙄</button>
 </div>
-
-<!-- Music container for YouTube -->
-<div id="musicContainer"></div>
 
 <script>
 // Floating hearts
@@ -119,7 +121,7 @@ window.onload = function() {
   const yesBtn = document.getElementById("yesBtn");
   const noBtn = document.getElementById("noBtn");
   const container = document.querySelector(".container");
-  const musicContainer = document.getElementById("musicContainer");
+  const song = document.getElementById("loveSong");
 
   // Moving NO button
   noBtn.addEventListener("mouseover", function() {
@@ -134,18 +136,8 @@ window.onload = function() {
 
   // YES button click
   yesBtn.addEventListener("click", function() {
-    // Embed Billie Eilish "Birds of a Feather" YouTube video (autoplay, loop)
-    musicContainer.innerHTML = `
-      <iframe width="0" height="0"
-        src="https://www.youtube.com/embed/ZK8w7oStj4Y?autoplay=1&loop=1&playlist=ZK8w7oStj4Y"
-        title="YouTube video player"
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen>
-      </iframe>
-    `;
+    song.play(); // start music
 
-    // Show overlay
     const overlay = document.createElement("div");
     overlay.classList.add("overlay");
 
