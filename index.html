@@ -86,9 +86,9 @@ button {
 
 <body>
 
-<!-- Music (will play after YES click) -->
+<!-- Audio -->
 <audio id="loveSong" loop>
-  <source src="song.mp3" type="audio/mpeg">
+  <source src="Billie_Eilish_-_Birds_of_feather_(mp3.pm).mp3" type="audio/mpeg">
 </audio>
 
 <div class="container">
@@ -136,8 +136,10 @@ window.onload = function() {
 
   // YES button click
   yesBtn.addEventListener("click", function() {
-    song.play(); // start music
+    // Play the MP3 audio
+    song.play();
 
+    // Show overlay with video and images
     const overlay = document.createElement("div");
     overlay.classList.add("overlay");
 
